@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>iBot</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+        <script>
+          // Initialize Firebase
+          var config = {
+            apiKey: "AIzaSyCPwcQukNtEsF9655UqBuO_LLtFLjvA1jc",
+            authDomain: "kalki-ibot.firebaseapp.com",
+            databaseURL: "https://kalki-ibot.firebaseio.com",
+            projectId: "kalki-ibot",
+            storageBucket: "kalki-ibot.appspot.com",
+            messagingSenderId: "1051053794077"
+          };
+          firebase.initializeApp(config);
+        </script>
+    </head>
+    <body>
+        <div id = "message" class = "well">
+            <input type = "text" id = "name"/>
+            <button id = "sendButton">Send</button>
+        </div>
+
+        <div id = "response" class = "well">
+            
+        </div>
+
+        <script>
+            $("#sendButton").on('click', function(){
+                console.log("You have pressed the send button");
+                var message = $("#name").val();
+                if(message == "")
+                    alert("I can't send nothing!");
+                else{
+                    console.log("Content validated");
+                    var reference = firebase.database().ref("/events");
+                    return reference.orderByChild("name").equalTo(message).on("child_added", (function(snapshot){
+                        console.log("In here at the reference part")
+                        var response = snapshot.val();
+                        console.log(response);
+                        alert(JSON.stringify(response));
+                        $("#response").html(JSON.stringify(response));
+                    }));
+
+
+                
+                }
+            });
+        </script>
+
+
+        <!--script>
+            var dbRef = firebase.database().ref().child('items');
+            dbRef.on('value', function(snap){
+                snap.forEach(function(child){
+                    $("#listItems").append("<li>" + child.val().item + " - " + child.val().quantity);
+                });
+            });
+            $("#addButton").on('click', function(){
+                var item = $("#itemName").val();
+                var quantity = $("#quantity").val();
+                if(item == "" || quantity == "")
+                    alert("I can't buy nothing!");
+                else{
+                    alert("You want " + item + " " + quantity);
+                    var itemsRef = firebase.database().ref("items/");
+                    itemsRef.push({
+                            "item": item,
+                            "quantity": quantity
+                    });
+                }
+            });
+        </script-->
+    </body>
+</html>
+<!---->

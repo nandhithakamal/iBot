@@ -1,0 +1,87 @@
+<html>
+	<head>
+		<title> iBot </title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+	</head>
+	<body>
+		<div class = "container-fluid" id = "mainDiv">
+			<div id = "textBoxDiv" class = "input-group input-group-lg">
+                    <input type = "text" class = "form-control" placeholder = "Enter your query here" id = "textBox">
+                    <div class = "input-group-btn">
+                        <button class = "btn btn-primary" id = "enterButton"> <i class="fa fa-sign-in" aria-hidden="true"></i></button>
+                    </div>
+            </div>
+
+			<div id = "userQuery" class = "text-right">
+			</div>
+
+			<div id = "botResponse" class = "text-left">
+			</div>
+
+		</div>
+
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+		</script>
+
+		<!--Javascript-->
+		<script>
+			$(document).ready(function(){
+
+				var userToken = 'QWVGKNB2YQB7YQTHJF46KIBTQMNZW4M2'
+
+				$("#textBox").keypress(function(e){
+			        if(e.keyCode == '13'){
+						var userQuery = $("#textBox").val();
+						if(userQuery.trim().length > 0){
+							updateUserQuery(userQuery);
+							fetchResponse(userQuery);
+						}
+						else{
+							console.log()
+						}
+
+			       	}
+			    });
+
+				function updateUserQuery(userQuery){
+					$("#userQuery").html(userQuery);
+				}
+
+				function fetchResponse(userQuery){
+
+					$.ajax({
+					  	url: 'https://api.wit.ai/message',
+					  	data: {
+						    'q': userQuery,
+						    'access_token' : userToken
+						},
+						dataType: 'jsonp',
+						method: 'GET',
+					  	success: function(response) {
+					      	console.log("success!", response);
+							$("#botResponse").html("Success!" + JSON.stringify(response));
+					  	}
+					});
+				}
+			});
+		</script>
+
+		<style>
+
+			#botResponse{
+				background-color: #6392dd;
+			}
+
+			#userQuery{
+				background-color: #ccd4e2;
+			}
+
+		</style>
+    </body>
+</html>
+
+	<body>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>iBot</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+        <script>
+          // Initialize Firebase
+          var config = {
+            apiKey: "AIzaSyCPwcQukNtEsF9655UqBuO_LLtFLjvA1jc",
+            authDomain: "kalki-ibot.firebaseapp.com",
+            databaseURL: "https://kalki-ibot.firebaseio.com",
+            projectId: "kalki-ibot",
+            storageBucket: "kalki-ibot.appspot.com",
+            messagingSenderId: "1051053794077"
+          };
+          firebase.initializeApp(config);
+        </script>
+    </head>
+    <body>
+        <div id = "new" class = "well">
+            <label>Name</label>
+            <input type = "text" id = "name"/>
+            <label>venue</label>
+            <input type = "text" id = "venue"/>
+            <br>
+            <label>time</label>
+            <input type = "text" id = "time"/>
+            <br>
+            <label>duration</label>
+            <input type = "text" id = "duration"/>
+            <br>
+            <button id = "addButton">Add Item</button>
+        </div>
+        <script>
+            $("#addButton").on('click', function(){
+                var name = $("#name").val();
+                var time = $("#time").val();
+                var duration = $("#duration").val();
+                var venue = $("#venue").val();
+                var additionalInformation = $("#additionalInformation").val();
+                if(name == "" || venue == "" || time == "" || duration == "")
+                    alert("I can't add nothing!");
+                else{
+                    var ref = firebase.database().ref("events/");
+                    ref.push({
+                            "name": name,
+                            "time": time,
+                            "venue": venue,
+                            "duration": duration
+                    });
+                    alert("Successfully added " + name + " on " + time + " at " + venue + " for " + duration);
+                }
+            });
+        </script>
+
+
+        <!--script>
+            var dbRef = firebase.database().ref().child('items');
+            dbRef.on('value', function(snap){
+                snap.forEach(function(child){
+                    $("#listItems").append("<li>" + child.val().item + " - " + child.val().quantity);
+                });
+            });
+            $("#addButton").on('click', function(){
+                var item = $("#itemName").val();
+                var quantity = $("#quantity").val();
+                if(item == "" || quantity == "")
+                    alert("I can't buy nothing!");
+                else{
+                    alert("You want " + item + " " + quantity);
+                    var itemsRef = firebase.database().ref("items/");
+                    itemsRef.push({
+                            "item": item,
+                            "quantity": quantity
+                    });
+                }
+            });
+        </script-->
+    </body>
+</html>
+<!---->
