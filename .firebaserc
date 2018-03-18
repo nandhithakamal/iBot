@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "kalki-ibot",
+    "ibot": "kalki-ibot"
+  }
+}
