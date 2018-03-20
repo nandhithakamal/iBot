@@ -24,6 +24,9 @@
             <label>venue</label>
             <input type = "text" id = "venue"/>
             <br>
+            <label>date</label>
+            <input type = "text" id = "date"/>
+            <br>
             <label>time</label>
             <input type = "text" id = "time"/>
             <br>
@@ -35,11 +38,12 @@
         <script>
             $("#addButton").on('click', function(){
                 var name = $("#name").val();
+                var date = $("#date").val();
                 var time = $("#time").val();
                 var duration = $("#duration").val();
                 var venue = $("#venue").val();
                 var additionalInformation = $("#additionalInformation").val();
-                if(name == "" || venue == "" || time == "" || duration == "")
+                if(name == "" || venue == "" || date == "" || time == "" || duration == "")
                     alert("I can't add nothing!");
                 else{
                     var ref = firebase.database().ref("events/");
@@ -47,9 +51,10 @@
                             "name": name,
                             "time": time,
                             "venue": venue,
-                            "duration": duration
+                            "duration": duration,
+                            "date": date
                     });
-                    alert("Successfully added " + name + " on " + time + " at " + venue + " for " + duration);
+                    alert("Successfully added " + name + " on " + date + " " + time + " at " + venue + " for " + duration);
                 }
             });
         </script>

@@ -3,6 +3,19 @@
 		<title> iBot </title>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+        <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+		<script>
+          // Initialize Firebase
+          var config = {
+            apiKey: "AIzaSyCPwcQukNtEsF9655UqBuO_LLtFLjvA1jc",
+            authDomain: "kalki-ibot.firebaseapp.com",
+            databaseURL: "https://kalki-ibot.firebaseio.com",
+            projectId: "kalki-ibot",
+            storageBucket: "kalki-ibot.appspot.com",
+            messagingSenderId: "1051053794077"
+          };
+          firebase.initializeApp(config);
+        </script>
 	</head>
 	<body>
 		<div class = "container-fluid" id = "mainDiv">
@@ -17,6 +30,9 @@
 			</div>
 
 			<div id = "botResponse" class = "text-left">
+			</div>
+
+			<div id = "message" class = "text-left">
 			</div>
 
 		</div>
@@ -62,9 +78,18 @@
 						dataType: 'jsonp',
 						method: 'GET',
 					  	success: function(response) {
-					      	console.log("success!", response);
 							$("#botResponse").html("Success!" + JSON.stringify(response));
-					  	}
+							var reference = firebase.database().ref("/events");
+                    		return reference.orderByChild("name").equalTo(response["entities"]["event"][0]["value"]).on("child_added", (function(snapshot){
+		                      	queryResponse = snapshot.val();
+		                        console.log(queryResponse);
+		                        alert(JSON.stringify(queryResponse));
+		                        $("#botResponse").append(JSON.stringify(queryResponse));
+		                        responseText = queryResponse["name"] + " is at " + queryResponse["venue"] + " on " +queryResponse["date"] + " at " + queryResponse["time"]+ ".";
+		                        console.log(responseText);
+		                        $("#message").html(responseText)
+		                    }));
+						}
 					});
 				}
 			});
@@ -77,6 +102,9 @@
 			}
 
 			#userQuery{
+				background-color: #ccd4e2;
+			}
+			#message{
 				background-color: #ccd4e2;
 			}
 

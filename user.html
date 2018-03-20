@@ -36,6 +36,7 @@
                 else{
                     console.log("Content validated");
                     var reference = firebase.database().ref("/events");
+                    console.log(reference)
                     return reference.orderByChild("name").equalTo(message).on("child_added", (function(snapshot){
                         console.log("In here at the reference part")
                         var response = snapshot.val();
