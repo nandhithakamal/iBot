@@ -1,4 +1,4 @@
-var firebase = require('firebase');
+/*var firebase = require('firebase');
 var hapi = require('hapi');
 
 var firebaseConfig = {
@@ -48,4 +48,4 @@ async function start(){
 	console.log("Server running at: ", hapiServer.info.uri);
 }
 
-start();
+start();*/

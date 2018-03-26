@@ -1,4 +1,5 @@
 var functions = require('firebase-functions');
+var firebase = require('firebase');
 var express = require('express');
 var bodyParser = require('body-parser');
 var http = require('http');
@@ -10,32 +11,19 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 var telegramToken = "568999963:AAG_fUNvvp8W_fcgi8Fc_P2C0mwI5RemAlI";
 
+var firebaseConfig = {
+    apiKey: "AIzaSyCPwcQukNtEsF9655UqBuO_LLtFLjvA1jc",
+    authDomain: "kalki-ibot.firebaseapp.com",
+    databaseURL: "https://kalki-ibot.firebaseio.com",
+    projectId: "kalki-ibot",
+    storageBucket: "kalki-ibot.appspot.com",
+    messagingSenderId: "1051053794077"
+	};
+firebase.initializeApp(firebaseConfig);
+
 app.get('/', (request, response) => {
-
-	/*var sendMessageConfig = {
-		defaultResponse : "Please wait until I get smarter!",
-		hostname : "https://api.telegram.org/bot" + telegramToken + "/sendMessage?chat_id=" + "302362320" + "&text=" + "Please wait until I get smarter!",
-		method : "GET"  
-	}
-
-	var sendMessage = http.request(sendMessageConfig, (sendMessageResponse) => {
-
-		sendMessageResponse.on('end', () => {
-			console.log(sendMessageResponse);
-			
-		});
-		
-	});
-
-	sendMessage.write("1234");
-	sendMessage.end();
-*/
-	response.send("Hello royalty! If you can see this, it means that Poochi is bloody amaazing! :D");
-	
-
+	response.send("App is functional");
 });
-
-
 
 app.get('/test', (request, response) => {
 	param = {
@@ -54,11 +42,42 @@ app.post('/testpost', (request, response) =>{
 app.post('/telegramMessage', (request, response) =>{
 	console.log(request.body);
 	console.log(request.body["result"]["metadata"]);
+
 	//result = sendDefaultResponse(request.body["message"]["text"]);
+	var realtimeDBReference = firebase.database().ref("events/");
+
+	/*realtimeDBReference.push({
+        "name": "Rajhesh Vaidhya's concert",
+        "time": "6:00 pm",
+        "venue": "MVB front lawn",
+        "duration": "2 hours",
+        "date": "21.03.2018"
+	});*/
+
+	var responseToSend = "Default telgram response";
+
+	intent = request.body["result"]["metadata"]["intentName"];
+	if (intent === "Get Event Intent"){
+		time = request.body["result"]["parameters"]["time"];
+		date = request.body["result"]["parameters"]["date"];
+		venue = request.body["result"]["parameters"]["venue"];
+	}
+	if (intent === "Get Event Details Intent"){
+		event = request.body["result"]["parameters"]["event"];
+		realtimeDBReference.orderByChild("name").equalTo(event).on("child_added", (snapshot) => {
+			responseJSON = snapshot.val();	
+			console.log(responseJSON);
+			responseToSend = responseJSON["name"] + " is at " + responseJSON["time"] + " on " + responseJSON["date"] + " at " + responseJSON["venue"];
+			console.log(responseToSend);
+		});
+	}
+	
+
 	result = {
-	  "speech": "this text is spoken out loud if the platform supports voice interactions",
-	  "displayText": "this text is displayed visually",
-	  "data": {
+		"displayText": responseToSend,
+	  	"speech": responseToSend,
+	  
+	  	"data": {
 		  	"google": {
 		      	"expectUserResponse": true,
 		      	"richResponse": {
@@ -72,15 +91,14 @@ app.post('/telegramMessage', (request, response) =>{
 		      	}
 	    	},
 	    	"telegram": {
-	      		"text": "This is a text response for Slack."
-		    },	
+	      		"text": responseToSend
+		    }	
 	    
 	  }
 	}
 	console.log(result);
 	return response.json(result);
 });
-
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
