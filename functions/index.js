@@ -54,26 +54,59 @@ app.post('/telegramMessage', (request, response) =>{
         "date": "21.03.2018"
 	});*/
 
-	var responseToSend = "Default telgram response";
+	//var responseToSend = "Default telgram response";
 
 	intent = request.body["result"]["metadata"]["intentName"];
-	if (intent === "Get Event Intent"){
+
+
+	/*if (intent === "Get Event Intent"){
 		time = request.body["result"]["parameters"]["time"];
 		date = request.body["result"]["parameters"]["date"];
 		venue = request.body["result"]["parameters"]["venue"];
-	}
+		realtimeDBReference.orderByChild("venue").equalTo("Auditorium").on("child_added", (snapshot) =>{
+			snapshot.forEach((childSnap) => {
+				console.log("Child snap");
+				console.log(childSnap);
+			});
+
+		});
+	}*/
+
 	if (intent === "Get Event Details Intent"){
 		event = request.body["result"]["parameters"]["event"];
 		realtimeDBReference.orderByChild("name").equalTo(event).on("child_added", (snapshot) => {
-			responseJSON = snapshot.val();	
-			console.log(responseJSON);
-			responseToSend = responseJSON["name"] + " is at " + responseJSON["time"] + " on " + responseJSON["date"] + " at " + responseJSON["venue"];
-			console.log(responseToSend);
+			eventDictionary = snapshot.val();	
+			message = eventDictionary["name"] + " is at " + eventDictionary["time"] + " on " + eventDictionary["date"] + " at " + eventDictionary["venue"];
+			responseToSend = {
+				"displayText": message,
+			  	"speech": message,
+			  
+			  	"data": {
+				  	"google": {
+				      	"expectUserResponse": true,
+				      	"richResponse": {
+				        	"items": [
+					          	{
+					           	 	"simpleResponse": {
+					            	  	"textToSpeech": "this is a simple response"
+					            	}	
+					          	}
+				        	]
+				      	}
+			    	},
+			    	"telegram": {
+			      		"text": message
+				    }	
+			    
+			  	}
+			}
+		//console.log(result);
+		return response.json(responseToSend);
 		});
 	}
 	
 
-	result = {
+	/*result = {
 		"displayText": responseToSend,
 	  	"speech": responseToSend,
 	  
@@ -97,7 +130,7 @@ app.post('/telegramMessage', (request, response) =>{
 	  }
 	}
 	console.log(result);
-	return response.json(result);
+	return response.json(result);*/
 });
 
 // // Create and Deploy Your First Cloud Functions
