@@ -9,7 +9,6 @@ var ajax = require("ajax-request");
 var app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-var telegramToken = "568999963:AAG_fUNvvp8W_fcgi8Fc_P2C0mwI5RemAlI";
 
 var firebaseConfig = {
     apiKey: "AIzaSyCPwcQukNtEsF9655UqBuO_LLtFLjvA1jc",
@@ -19,6 +18,7 @@ var firebaseConfig = {
     storageBucket: "kalki-ibot.appspot.com",
     messagingSenderId: "1051053794077"
 	};
+
 firebase.initializeApp(firebaseConfig);
 
 app.get('/', (request, response) => {
@@ -59,22 +59,27 @@ app.post('/telegramMessage', (request, response) =>{
 	intent = request.body["result"]["metadata"]["intentName"];
 
 
-	/*if (intent === "Get Event Intent"){
+	if (intent === "Get Event Intent"){
 		time = request.body["result"]["parameters"]["time"];
 		date = request.body["result"]["parameters"]["date"];
 		venue = request.body["result"]["parameters"]["venue"];
-		realtimeDBReference.orderByChild("venue").equalTo("Auditorium").on("child_added", (snapshot) =>{
+		queryReference = realtimeDBReference;
+
+		if (date === ""){
+			realtimeDBReference.orderByChild("venue").equalTo("Auditorium").on("child_added", (snapshot) =>{
 			snapshot.forEach((childSnap) => {
 				console.log("Child snap");
 				console.log(childSnap);
 			});
+		}
+		
 
 		});
-	}*/
+	}
 
 	if (intent === "Get Event Details Intent"){
 		event = request.body["result"]["parameters"]["event"];
-		realtimeDBReference.orderByChild("name").equalTo(event).on("child_added", (snapshot) => {
+		realtimeDBReference.orderByChild("name").equalTo(event).once("child_added", (snapshot) => {
 			eventDictionary = snapshot.val();	
 			message = eventDictionary["name"] + " is at " + eventDictionary["time"] + " on " + eventDictionary["date"] + " at " + eventDictionary["venue"];
 			responseToSend = {
