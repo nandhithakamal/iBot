@@ -20,7 +20,7 @@ var firebaseConfig = {
 	};
 
 firebase.initializeApp(firebaseConfig);
-
+var realtimeDBReference = firebase.database().ref("events/");
 app.get('/', (request, response) => {
 	response.send("App is functional");
 });
@@ -33,18 +33,37 @@ app.get('/test', (request, response) => {
 	}
 	res = sendDefaultResponse(param);
 	response.send(res);
-}); 
+});
 
 app.post('/testpost', (request, response) =>{
 	response.send(JSON.stringify(request.body) + "Post endpoint works");
 });
+
+app.get("/addEvent", (request, response) =>{
+    // name = request.name;
+    // time = request.time;
+    // date = request.date;
+    // venue = request.venue;
+    // duration = request.duration;
+    // console.log(name, date, time, venue, duration);
+    console.log("This is the request\n" + request.body);
+    // realtimeDBReference.push({
+    //     "name": name,
+    //     "time": time,
+    //     "venue": venue,
+    //     "duration": duration,
+    //     "date": date
+	// });
+    response.send("Success - hook");
+});
+
 
 app.post('/telegramMessage', (request, response) =>{
 	console.log(request.body);
 	console.log(request.body["result"]["metadata"]);
 
 	//result = sendDefaultResponse(request.body["message"]["text"]);
-	var realtimeDBReference = firebase.database().ref("events/");
+	//var realtimeDBReference = firebase.database().ref("events/");
 
 	/*realtimeDBReference.push({
         "name": "Rajhesh Vaidhya's concert",
@@ -65,27 +84,18 @@ app.post('/telegramMessage', (request, response) =>{
 		venue = request.body["result"]["parameters"]["venue"];
 		queryReference = realtimeDBReference;
 
-		if (date === ""){
-			realtimeDBReference.orderByChild("venue").equalTo("Auditorium").on("child_added", (snapshot) =>{
-			snapshot.forEach((childSnap) => {
-				console.log("Child snap");
-				console.log(childSnap);
-			});
-		}
-		
-
-		});
+		console.log("This intent is yet to have handler code");
 	}
 
 	if (intent === "Get Event Details Intent"){
 		event = request.body["result"]["parameters"]["event"];
 		realtimeDBReference.orderByChild("name").equalTo(event).once("child_added", (snapshot) => {
-			eventDictionary = snapshot.val();	
+			eventDictionary = snapshot.val();
 			message = eventDictionary["name"] + " is at " + eventDictionary["time"] + " on " + eventDictionary["date"] + " at " + eventDictionary["venue"];
 			responseToSend = {
 				"displayText": message,
 			  	"speech": message,
-			  
+
 			  	"data": {
 				  	"google": {
 				      	"expectUserResponse": true,
@@ -94,27 +104,27 @@ app.post('/telegramMessage', (request, response) =>{
 					          	{
 					           	 	"simpleResponse": {
 					            	  	"textToSpeech": "this is a simple response"
-					            	}	
+					            	}
 					          	}
 				        	]
 				      	}
 			    	},
 			    	"telegram": {
 			      		"text": message
-				    }	
-			    
+				    }
+
 			  	}
 			}
 		//console.log(result);
 		return response.json(responseToSend);
 		});
 	}
-	
+
 
 	/*result = {
 		"displayText": responseToSend,
 	  	"speech": responseToSend,
-	  
+
 	  	"data": {
 		  	"google": {
 		      	"expectUserResponse": true,
@@ -123,15 +133,15 @@ app.post('/telegramMessage', (request, response) =>{
 			          	{
 			           	 	"simpleResponse": {
 			            	  	"textToSpeech": "this is a simple response"
-			            	}	
+			            	}
 			          	}
 		        	]
 		      	}
 	    	},
 	    	"telegram": {
 	      		"text": responseToSend
-		    }	
-	    
+		    }
+
 	  }
 	}
 	console.log(result);
@@ -148,7 +158,7 @@ exports.app = functions.https.onRequest(app);
 		console.log("Error: " + error)
 		console.log("Response: " + response);
 		console.log("Body: " + body);
-		
+
 	});
 
 	return("returned");
