@@ -39,21 +39,17 @@ app.post('/testpost', (request, response) =>{
 	response.send(JSON.stringify(request.body) + "Post endpoint works");
 });
 
-app.get("/addEvent", (request, response) =>{
+app.post("/addEvent", (request, response) =>{
     // name = request.name;
     // time = request.time;
     // date = request.date;
     // venue = request.venue;
     // duration = request.duration;
     // console.log(name, date, time, venue, duration);
-    console.log("This is the request\n" + request.body);
-    // realtimeDBReference.push({
-    //     "name": name,
-    //     "time": time,
-    //     "venue": venue,
-    //     "duration": duration,
-    //     "date": date
-	// });
+    console.log(">>>>>>>>>>>>>>>>>>>>>");
+    console.log(">>>>>>>>>>>>>>>>>>>>>");
+    console.log(request.body);
+    realtimeDBReference.push(request.body);
     response.send("Success - hook");
 });
 

@@ -88,6 +88,7 @@
                 success: function(response){
                     console.log("Successfully added event to Dialogflow entity");
                     console.log(response);
+                    addEventToRealtimeDB(eventJson);
                 },
                 error: function(error){
                     console.log("Error!");
@@ -100,7 +101,7 @@
             $.ajax({
                 url: '/addEvent',
                 data: eventJson,
-                method: 'GET',
+                method: 'POST',
                 async: false,
                 success: function(response) {
                     console.log("Successfully hooked to addEvent endpoint");
