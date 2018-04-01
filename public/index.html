@@ -34,29 +34,74 @@
         <label>duration</label>
         <input type = "text" id = "duration"/>
         <br>
+        <label>synonyms</label>
+        <input type = "text" id = "synonyms"/>
+        <br>
         <button id = "addButton">Add Item</button>
     </div>
     <script>
         $("#addButton").on('click', function(){
-
             console.log("Trying to add a new event info");
             var name = $("#name").val();
             var date = $("#date").val();
             var time = $("#time").val();
             var duration = $("#duration").val();
             var venue = $("#venue").val();
+            var synonyms = $("#synonyms").val();
             eventJson = {
                 "name": name,
                 "date": date,
                 "time": time,
                 "venue": venue,
-                "duration": duration
+                "duration": duration,
             }
-            console.log(eventJson)
+            arrayOfSynonyms = generateArrayOfSynonyms(synonyms, name);
+            eventEntry = JSON.stringify([
+                {
+        		"value": name,
+        		"synonyms": arrayOfSynonyms
+        	   }
+           ]);
+
+            console.log(eventJson);
+            console.log(eventEntry);
+            addEventEntryToEntities(eventJson, eventEntry);
+        });
+
+        function generateArrayOfSynonyms(synonyms, value){
+            arrayOfSynonyms = synonyms.split(", ");
+            arrayOfSynonyms.push(value);
+            return arrayOfSynonyms;
+        }
+
+        function addEventEntryToEntities(eventJson, eventEntry){
+            $.ajax({
+                url: "https://api.dialogflow.com/v1/entities/event/entries",
+                data: eventEntry,
+                method: 'POST',
+                async: false,
+                //dataType: 'jsonp',
+                headers: {
+                    "Authorization": "Bearer 6043f596e6c44c03bf3740543e015ce5",
+                    "Content-Type": "application/json"
+                },
+                success: function(response){
+                    console.log("Successfully added event to Dialogflow entity");
+                    console.log(response);
+                },
+                error: function(error){
+                    console.log("Error!");
+                    console.log(error.responseJSON);
+                }
+            });
+        }
+
+        function addEventToRealtimeDB(eventJson){
             $.ajax({
                 url: '/addEvent',
                 data: eventJson,
                 method: 'GET',
+                async: false,
                 success: function(response) {
                     console.log("Successfully hooked to addEvent endpoint");
                     console.log(response);
@@ -65,8 +110,7 @@
                     console.log(error);
                 }
             });
-
-        });
+        }
 
     </script>
     <script>
