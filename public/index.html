@@ -7,38 +7,65 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- update the version number as needed -->
     <script defer src="/__/firebase/4.12.1/firebase-app.js"></script>
     <!-- include only the Firebase features as you need -->
     <script defer src="/__/firebase/4.12.1/firebase-auth.js"></script>
-    <script defer src="/__/firebase/4.12.1/firebase-database.js"></script>
-    <script defer src="/__/firebase/4.12.1/firebase-messaging.js"></script>
-    <script defer src="/__/firebase/4.12.1/firebase-storage.js"></script>
     <!-- initialize the SDK after all desired features are loaded -->
     <script defer src="/__/firebase/init.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Slabo+27px" rel="stylesheet">
 </head>
 <body>
-    <div id = "addEventDiv" class = "well">
+    <div id = "addEventDiv" class = "well text-center">
+        <div id = "kalki">
+            Add your event so that Kalki can discover it!
+        </div>
         <label>Name</label>
         <input type = "text" id = "name"/>
         <br>
-        <label>venue</label>
+        <label>Venue</label>
         <input type = "text" id = "venue"/>
         <br>
-        <label>date</label>
+        <label>Date</label>
         <input type = "text" id = "date"/>
         <br>
-        <label>time</label>
+        <label>Time</label>
         <input type = "text" id = "time"/>
         <br>
-        <label>duration</label>
+        <label>Duration</label>
         <input type = "text" id = "duration"/>
         <br>
-        <label>synonyms</label>
+        <label>Synonyms</label>
         <input type = "text" id = "synonyms"/>
         <br>
-        <button id = "addButton">Add Item</button>
+        <button id = "addButton" class = "btn btn-primary">Add Event</button>
+        <div>
     </div>
+    <style>
+        body{
+            font-family: 'Slabo 27px', serif;
+            font-size: 20px;
+            background-image: url("https://c.slashgear.com/wp-content/uploads/2017/06/bokeh_cc0_pixabay.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            padding-top: 100px;
+            padding-left: 100px;
+            padding-right: 100px;
+        }
+        #kalki{
+            font-size: 40px;
+        }
+        input{
+            margin: 10px 10px
+        }
+        #addButton{
+            font-size: 20px;
+        }
+        #addEventDiv{
+            opacity: 0.77;
+        }
+    </style>
     <script>
         $("#addButton").on('click', function(){
             console.log("Trying to add a new event info");
