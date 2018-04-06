@@ -1,167 +1,67 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
+  <head>
+    <meta charset="UTF-8">
+    <title>Kalki - iBot</title>
+    <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Slabo+27px" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/4.12.1/firebase-app.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/4.12.1/firebase-auth.js"></script>
-    <!-- initialize the SDK after all desired features are loaded -->
-    <script defer src="/__/firebase/init.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Slabo+27px" rel="stylesheet">
-</head>
-<body>
-    <div id = "addEventDiv" class = "well text-center">
-        <div id = "kalki">
-            Add your event so that Kalki can discover it!
-        </div>
-        <label>Name</label>
-        <input type = "text" id = "name"/>
-        <br>
-        <label>Venue</label>
-        <input type = "text" id = "venue"/>
-        <br>
-        <label>Date</label>
-        <input type = "text" id = "date"/>
-        <br>
-        <label>Time</label>
-        <input type = "text" id = "time"/>
-        <br>
-        <label>Duration</label>
-        <input type = "text" id = "duration"/>
-        <br>
-        <label>Synonyms</label>
-        <input type = "text" id = "synonyms"/>
-        <br>
-        <button id = "addButton" class = "btn btn-primary">Add Event</button>
-        <div>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyCPwcQukNtEsF9655UqBuO_LLtFLjvA1jc",
+        authDomain: "kalki-ibot.firebaseapp.com",
+        databaseURL: "https://kalki-ibot.firebaseio.com",
+        projectId: "kalki-ibot",
+        storageBucket: "kalki-ibot.appspot.com",
+        messagingSenderId: "1051053794077"
+      };
+      firebase.initializeApp(config);
+    </script>
+    <script src="https://cdn.firebase.com/libs/firebaseui/2.7.0/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.7.0/firebaseui.css" />
+    <script type="text/javascript">
+      // FirebaseUI config.
+      var uiConfig = {
+        signInSuccessUrl: 'ibot.html',
+        signInOptions: [
+          // Leave the lines as is for the providers you want to offer your users.
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+          firebase.auth.EmailAuthProvider.PROVIDER_ID,
+        ],
+        // Terms of service url.
+        tosUrl: '<your-tos-url>'
+      };
+
+      // Initialize the FirebaseUI Widget using Firebase.
+      var ui = new firebaseui.auth.AuthUI(firebase.auth());
+      // The start method will wait until the DOM is loaded.
+      ui.start('#firebaseui-auth-container', uiConfig);
+    </script>
+  </head>
+  <body>
+    <div id = "kalki" class = "text-center">
+        Kalki
     </div>
+    <div id = "signInText" class = "text-center">
+        <!-- Sign in to access Kalki -->
+    </div>
+    <div id="firebaseui-auth-container"></div>
     <style>
+        #kalki{
+            font-family: 'Crimson Text', serif;
+            font-size: 100px;
+            margin-top: 100px;
+            color: #e1e5ed;
+        }
         body{
-            font-family: 'Slabo 27px', serif;
-            font-size: 20px;
             background-image: url("https://c.slashgear.com/wp-content/uploads/2017/06/bokeh_cc0_pixabay.jpg");
             background-repeat: no-repeat;
             background-size: cover;
-            padding-top: 100px;
-            padding-left: 100px;
-            padding-right: 100px;
         }
-        #kalki{
-            font-size: 40px;
-        }
-        input{
-            margin: 10px 10px
-        }
-        #addButton{
+        #signInText{
+            font-family: 'Slabo 27px', serif;
             font-size: 20px;
         }
-        #addEventDiv{
-            opacity: 0.77;
-        }
-    </style>
-    <script>
-        $("#addButton").on('click', function(){
-            console.log("Trying to add a new event info");
-            var name = $("#name").val();
-            var date = $("#date").val();
-            var time = $("#time").val();
-            var duration = $("#duration").val();
-            var venue = $("#venue").val();
-            var synonyms = $("#synonyms").val();
-            eventJson = {
-                "name": name,
-                "date": date,
-                "time": time,
-                "venue": venue,
-                "duration": duration,
-            }
-            arrayOfSynonyms = generateArrayOfSynonyms(synonyms, name);
-            eventEntry = JSON.stringify([
-                {
-        		"value": name,
-        		"synonyms": arrayOfSynonyms
-        	   }
-           ]);
-
-            console.log(eventJson);
-            console.log(eventEntry);
-            addEventEntryToEntities(eventJson, eventEntry);
-        });
-
-        function generateArrayOfSynonyms(synonyms, value){
-            arrayOfSynonyms = synonyms.split(", ");
-            arrayOfSynonyms.push(value);
-            return arrayOfSynonyms;
-        }
-
-        function addEventEntryToEntities(eventJson, eventEntry){
-            $.ajax({
-                url: "https://api.dialogflow.com/v1/entities/event/entries",
-                data: eventEntry,
-                method: 'POST',
-                async: false,
-                //dataType: 'jsonp',
-                headers: {
-                    "Authorization": "Bearer 6043f596e6c44c03bf3740543e015ce5",
-                    "Content-Type": "application/json"
-                },
-                success: function(response){
-                    console.log("Successfully added event to Dialogflow entity");
-                    console.log(response);
-                    addEventToRealtimeDB(eventJson);
-                },
-                error: function(error){
-                    console.log("Error!");
-                    console.log(error.responseJSON);
-                }
-            });
-        }
-
-        function addEventToRealtimeDB(eventJson){
-            $.ajax({
-                url: '/addEvent',
-                data: eventJson,
-                method: 'POST',
-                async: false,
-                success: function(response) {
-                    console.log("Successfully hooked to addEvent endpoint");
-                    console.log(response);
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
-        }
-
-    </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-        try {
-            let app = firebase.app();
-            let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-            document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-            console.error(e);
-            document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
-        }
-    });
-    </script>
-</body>
+  </body>
 </html>
